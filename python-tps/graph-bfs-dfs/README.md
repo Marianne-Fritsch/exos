@@ -57,25 +57,35 @@ Nous avons besoin de deux structures :
 ```python
 from collections import deque
 
-class Fifo:
+class Structure:
     def __init__(self):
-        pass
-    def store(self, item):
-        pass
-    def retrieve(self):
-        pass
-    def __len__(self):
-        pass
+        self.state = deque()
 
-class Filo:
-    def __init__(self):
-        pass
-    def store(self, item):
-        pass
     def retrieve(self):
-        pass
+        self.state.popleft()
+        return(self.state)
+
+    def __bool__(self):
+        return len(self.state) > 0
+
+    def __iter__(self):
+        return self.state.__iter__()
+
+class Fifo(Structure):
+    def store(self, item):
+        self.state.append(item)
+        return(self.state)
+
     def __len__(self):
-        pass
+        return(len(self.state))
+
+class Filo(Structure):
+    def store(self, item):
+        self.state.appendleft(item)
+        return(self.state)
+
+    def __len__(self):
+        return(len(self.state))
 ```
 
 #### Vérifiez leur bon fonctionnement :
@@ -89,12 +99,16 @@ while fifo:
     print(f"retrieve → {fifo.retrieve()}")
 
 # Testez Filo
-pass
+filo = Filo()
+for i in range(1, 4):
+    filo.store(i)
+while filo:
+    print(f"retrieve → {filo.retrieve()}")
 ```
 
 **Questions :**
 1. Quelle est la différence dans l'ordre des éléments récupérés entre Fifo et Filo ?
-
+Avec Fifo, on a un comportement de file et avec Filo, on a un comportement de pile.
 ---
 
 ### Étape 2 : Représentation d'un Graphe
@@ -104,11 +118,12 @@ Implémentez une classe `Tree` pour représenter un sommet :
 ```python
 class Tree:
     def __init__(self, name):
+        self.name = name
         self.neighbours = set()
         pass
 
     def add_neighbour(self, other):
-        pass
+        return self.neighbours.add(other)
 
     # ...
 ```
@@ -141,6 +156,25 @@ print(len(g))
 2. Que représente l'argument `depth` ?
 
 ---
+
+### Étape 3 : Implémentation des Algorithmes de Parcours
+
+Implémentez une fonction `scan` pour explorer un graphe :
+
+```python
+def scan(start, storage):
+    storage.store(start)
+    scanned = set()
+
+    while storage:
+        current = storage.retrieve()
+        if current in scanned:
+            continue
+        yield current
+        scanned.add(current)
+        for neighbour in current.neighbours:
+            storage.store(neighbour)
+```
 
 #### Testez les parcours :
 
